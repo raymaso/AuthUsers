@@ -6,4 +6,5 @@
     <string name="pass_hint">Contraseña</string>
     <string name="text_login">Ya estás registrado? Has click aquí</string>
     <string name="text_singup">No estás registrado? Has click aquí</string>
+    <string name="button_logout">Cerrar Sesión</string>
 </resources>

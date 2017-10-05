@@ -26,7 +26,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
-    private  Intent myintent;
+    private Intent myintent;
+    private Intent new_intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         progressDialog = new ProgressDialog(this);
 
         myintent = new Intent(RegisterActivity.this, LoginActivity.class);
+        new_intent = new Intent(RegisterActivity.this, MainActivity.class);
 
         email = (EditText) findViewById(R.id.email);
         pass = (EditText) findViewById(R.id.pass);
@@ -51,24 +53,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        if(v==register){
+        if (v == register) {
             registerUser();
         }
-      if(v==login){
-         startActivity(myintent);
-      }
+        if (v == login) {
+            startActivity(myintent);
+        }
     }
 
-    private void registerUser(){
+    private void registerUser() {
 
         String correo = email.getText().toString().trim();
         String password = pass.getText().toString().trim();
 
-        if(TextUtils.isEmpty(correo)){
+        if (TextUtils.isEmpty(correo)) {
             Toast.makeText(this, "El correo es obligatorio", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, "El password es obligatorio", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -77,20 +79,19 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
         firebaseAuth.createUserWithEmailAndPassword(correo, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if(task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                            startActivity(myintent);
-                        }
-                        else{
-                            Toast.makeText(RegisterActivity.this, "Error al registrar el usuario", Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                        }
-                    }
-                });
+                if (task.isSuccessful()) {
+                    progressDialog.dismiss();
+                    finish();
+                    startActivity(new_intent);
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(RegisterActivity.this, "Error al registrar el usuario", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 }
