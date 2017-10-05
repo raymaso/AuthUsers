@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">AuthUsers</string>
     <string name="button_value">Registrarse</string>
+    <string name="button_value_login">Iniciar Sesión</string>
     <string name="email_hint">Correo electrónico</string>
     <string name="pass_hint">Contraseña</string>
-    <string name="text_login">Ya estás registrado?</string>
+    <string name="text_login">Ya estás registrado? Has click aquí</string>
+    <string name="text_singup">No estás registrado? Has click aquí</string>
 </resources>
