@@ -7,4 +7,7 @@
     <string name="text_login">Ya estás registrado? Has click aquí</string>
     <string name="text_singup">No estás registrado? Has click aquí</string>
     <string name="button_logout">Cerrar Sesión</string>
+    <string name="name">Name</string>
+    <string name="username">Username</string>
+    <string name="user_saved">El usuario se guardó correctamente</string>
 </resources>

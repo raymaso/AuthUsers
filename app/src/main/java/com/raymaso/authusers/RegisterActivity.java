@@ -16,11 +16,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText email;
     private EditText pass;
+    private EditText name;
+    private EditText username;
     private TextView login;
     private Button register;
 
@@ -28,6 +36,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private FirebaseAuth firebaseAuth;
     private Intent myintent;
     private Intent new_intent;
+
+    DatabaseReference myRef ;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +49,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
 
+        myRef = FirebaseDatabase.getInstance().getReference("user");
         myintent = new Intent(RegisterActivity.this, LoginActivity.class);
         new_intent = new Intent(RegisterActivity.this, MainActivity.class);
 
         email = (EditText) findViewById(R.id.email);
         pass = (EditText) findViewById(R.id.pass);
+        name = (EditText) findViewById(R.id.name);
+        username = (EditText) findViewById(R.id.username);
         register = (Button) findViewById(R.id.register);
         login = (TextView) findViewById(R.id.login);
 
@@ -63,9 +78,19 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void registerUser() {
 
-        String correo = email.getText().toString().trim();
-        String password = pass.getText().toString().trim();
+        final String correo = email.getText().toString().trim();
+        final String password = pass.getText().toString().trim();
+        final String nombre = name.getText().toString().trim();
+        final String usuario = username.getText().toString().trim();
 
+        if (TextUtils.isEmpty(nombre) ) {
+            Toast.makeText(this, "El nombre es obligatorio", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(usuario)) {
+            Toast.makeText(this, "El nombre de usuario es obligatorio", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (TextUtils.isEmpty(correo)) {
             Toast.makeText(this, "El correo es obligatorio", Toast.LENGTH_SHORT).show();
             return;
@@ -83,6 +108,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()) {
+
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(c.getTime());
+
+                    FirebaseUser id_guardado= firebaseAuth.getCurrentUser();
+                    String id = myRef.push().getKey();
+                    User user = new User(id, id_guardado.getUid(),nombre,usuario,correo,password,formattedDate);
+                    myRef.child(usuario).setValue(user);
+                    Toast.makeText(RegisterActivity.this, "Usuario Guardado", Toast.LENGTH_SHORT).show();
+
                     progressDialog.dismiss();
                     finish();
                     startActivity(new_intent);
